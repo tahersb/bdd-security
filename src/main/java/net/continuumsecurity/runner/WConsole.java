@@ -41,8 +41,8 @@ public class WConsole {
         console.setVariable("app",app);
         //TODO fixme
         //console.setVariable("driver",app.getDriver());
-        console.setVariable("burpDriver",DriverFactory.getDriver(Config.getBurpDriver()));
-        console.setVariable("burp",BurpFactory.getBurp());
+        console.setVariable("proxyDriver",DriverFactory.getDriver(Config.getProxyDriver()));
+        console.setVariable("proxy",BurpFactory.getBurp());
         console.run();
     }
 

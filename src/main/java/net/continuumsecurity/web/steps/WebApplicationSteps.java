@@ -38,23 +38,24 @@ import java.util.regex.Pattern;
 
 import net.continuumsecurity.Config;
 import net.continuumsecurity.ConfigurationException;
+import net.continuumsecurity.InterceptingProxy;
 import net.continuumsecurity.User;
 import net.continuumsecurity.UserPassCredentials;
+import net.continuumsecurity.Utils;
 import net.continuumsecurity.behaviour.ICaptcha;
 import net.continuumsecurity.behaviour.ILogin;
 import net.continuumsecurity.behaviour.ILogout;
 import net.continuumsecurity.behaviour.IRecoverPassword;
-import net.continuumsecurity.burpclient.BurpClient;
-import net.continuumsecurity.restyburp.model.HttpMessage;
-import net.continuumsecurity.restyburp.model.HttpMessageList;
-import net.continuumsecurity.restyburp.model.MessageType;
 import net.continuumsecurity.web.Application;
 import net.continuumsecurity.web.FakeCaptchaHelper;
 import net.continuumsecurity.web.StepException;
 import net.continuumsecurity.web.WebApplication;
-import net.continuumsecurity.web.drivers.BurpFactory;
 
 import org.apache.log4j.Logger;
+import org.browsermob.core.har.HarCookie;
+import org.browsermob.core.har.HarEntry;
+import org.browsermob.core.har.HarRequest;
+import org.browsermob.core.har.HarResponse;
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.annotations.BeforeStory;
@@ -70,15 +71,17 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
+import com.rits.cloning.Cloner;
+
 public class WebApplicationSteps {
 	Logger log = Logger.getLogger(WebApplicationSteps.class);
 	public Application app;
 	UserPassCredentials credentials;
-	HttpMessage currentHttp;
-	HttpMessage savedMessage;
-	BurpClient burp;
+	HarEntry currentHttp;
+	HarEntry savedMessage;
+	InterceptingProxy proxy;
 	List<Cookie> sessionIds;
-	Map<String, List<HttpMessage>> methodProxyMap = new HashMap<String, List<HttpMessage>>();
+	Map<String, List<HarEntry>> methodProxyMap = new HashMap<String, List<HarEntry>>();
 
 	public WebApplicationSteps() {
 
@@ -259,25 +262,30 @@ public class WebApplicationSteps {
 	}
 
 	@Given("an HTTP logging driver")
-	public void setBurpDriver() {
+	public void setProxyDriver() {
 		app.enableHttpLoggingClient();
 	}
 
 	@Given("clean HTTP logs")
 	@When("the HTTP logs are cleared")
-	public void resetBurp() {
-		burp = BurpFactory.getBurp();
-		burp.reset();
+	public void resetProxy() {
+		proxy.clear();
+		//burp = BurpFactory.getBurp();
+		//burp.reset();
 	}
 
 	@Given("the HTTP request-response containing the default credentials")
 	public void findRequestWithPassword() throws UnsupportedEncodingException {
 		String passwd = URLEncoder.encode(credentials.getPassword(), "UTF-8");
 		String username = URLEncoder.encode(credentials.getUsername(), "UTF-8");
-		HttpMessageList messageList = new HttpMessageList();
-		messageList.setMessages(burp.findInRequestHistory(passwd));
-		List<HttpMessage> requests = messageList.findInMessages(username,
-				MessageType.REQUEST);
+		 
+		//HttpMessageList messageList = new HttpMessageList();
+		//messageList.setMessages(burp.findInRequestHistory(passwd));
+		//List<HttpMessage> requests = messageList.findInMessages(username,
+		//		MessageType.REQUEST);
+		List<HarEntry> requests = proxy.findInRequestHistory(passwd);
+		
+		
 		if (requests == null || requests.size() == 0)
 			throw new StepException(
 					"Could not find HTTP request with credentials: "
@@ -288,24 +296,26 @@ public class WebApplicationSteps {
 
 	@Then("the protocol should be HTTPS")
 	public void protocolHttps() {
-		assertThat(currentHttp.getProtocol(), equalToIgnoringCase("https"));
+		assertThat(currentHttp.getRequest().getUrl().startsWith("https"),is(true));
 	}
 
 	@Given("the HTTP request-response containing the login form")
 	public void findResponseWithLoginform() throws UnsupportedEncodingException {
 		String regex = "(?i)input[\\s\\w=:'\"]*type\\s*=\\s*['\"]password['\"]";
-		HttpMessageList messageList = new HttpMessageList();
-		messageList.setMessages(burp.findInResponseHistory(regex));
-		if (messageList.messages == null || messageList.messages.size() == 0)
+		//HttpMessageList messageList = new HttpMessageList();
+		//messageList.setMessages(burp.findInResponseHistory(regex));
+		List<HarEntry> responses = proxy.findInResponseHistory(regex);
+		
+		if (responses == null || responses.size() == 0)
 			throw new StepException(
 					"Could not find HTTP response with password form using regex: "
 							+ regex);
-		currentHttp = messageList.messages.get(0);
+		currentHttp = responses.get(0);
 	}
 
 	@Given("the request-response is saved")
 	public void saveCurrentHttp() {
-		savedMessage = new HttpMessage(currentHttp);
+		savedMessage = new Cloner().deepClone(currentHttp);
 	}
 
 	@Then("the protocol of the current URL should be HTTPS")
@@ -318,12 +328,11 @@ public class WebApplicationSteps {
 
 	@Then("the response should be the same as the saved response from the invalid username")
 	public void compareResponses() {
-		assertThat(savedMessage.getStatusCode(),
-				equalTo(currentHttp.getStatusCode()));
+		assertThat(savedMessage.getResponse().getStatus(),
+				equalTo(currentHttp.getResponse().getStatus()));
 
-		String incorrectUsernameResponse = savedMessage.getResponseAsString()
-				.replaceAll(Config.getIncorrectUsername(), "");
-		String correctUsernameResponse = currentHttp.getResponseAsString()
+		String incorrectUsernameResponse = savedMessage.getResponse().getContent().getText().replaceAll(Config.getIncorrectUsername(), "");
+		String correctUsernameResponse = currentHttp.getResponse().getContent().getText()
 				.replaceAll(
 						Config.instance().getUsers().getDefaultCredentials()
 								.get("username"), "");
@@ -332,7 +341,7 @@ public class WebApplicationSteps {
 
 	@Then("the response status code should start with 3")
 	public void statusCode3xx() {
-		assertThat(Short.toString(currentHttp.getStatusCode()).substring(0, 1),
+		assertThat(Integer.toString(currentHttp.getResponse().getStatus()).substring(0, 1),
 				equalTo("3"));
 	}
 
@@ -376,13 +385,14 @@ public class WebApplicationSteps {
 		Config.instance();
 		int numCookies = Config.getSessionIDs().size();
 		int cookieCount = 0;
-		for (HttpMessage message : burp.getProxyHistory()) {
+		for (HarEntry entry : proxy.getHistory()) {
 			for (String name : Config.getSessionIDs()) {
-				Pattern pattern = Pattern.compile(name + "=.*httponly",
-						Pattern.CASE_INSENSITIVE);
-				if (pattern.matcher(message.getResponseAsString()).find()) {
-					cookieCount++;
+				for (HarCookie cookie : entry.getResponse().getCookies()) {
+					if (name.equalsIgnoreCase(cookie.getName())) {
+						if (cookie.getHttpOnly()) cookieCount++;
+					}
 				}
+				
 			}
 		}
 		Assert.assertThat(cookieCount, greaterThanOrEqualTo(numCookies));
@@ -445,7 +455,7 @@ public class WebApplicationSteps {
 					+ " has already been added to the map, using the existing HTTP logs");
 			return;
 		}
-		methodProxyMap.put(method, burp.getProxyHistory());
+		methodProxyMap.put(method, proxy.getHistory());
 	}
 
 	@Given("the access control map for authorised users has been populated")
@@ -474,15 +484,10 @@ public class WebApplicationSteps {
 					+ " has already been added to the map, using the existing HTTP logs");
 			return;
 		}
-		methodProxyMap.put(method, burp.getProxyHistory());
+		methodProxyMap.put(method, proxy.getHistory());
 
-		try {
-			Assert.assertThat(burp.findInResponseHistory(verifyString).size(),
-					greaterThan(0));
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-			log.error(e.getMessage());
-		}
+		Assert.assertThat(proxy.findInResponseHistory(verifyString).size(),
+				greaterThan(0));
 	}
 
 	@Then("they should not see the word <verifyString> when accessing the restricted resource <method>")
@@ -495,22 +500,23 @@ public class WebApplicationSteps {
 		Pattern pattern = Pattern.compile(verifyString);
 		boolean accessible = false;
 		getSessionIds();
-		for (HttpMessage message : methodProxyMap.get(method)) {
-			if (!"".equals(message.getResponseBody())) {
-				log.debug("Original request:\n" + message.getRequestAsString());
-				log.debug("Original response:\n"
-						+ message.getResponseAsString());
+		for (HarEntry message : methodProxyMap.get(method)) {
+			if (!"".equals(message.getResponse().getContent().getText())) {
+				//log.debug("Original request:\n" + message.getRequestAsString());
+				//log.debug("Original response:\n"
+				//		+ message.getResponseAsString());
 				Map<String, String> cookieMap = new HashMap<String, String>();
 				for (Cookie cookie : sessionIds) {
 					cookieMap.put(cookie.getName(), cookie.getValue());
 				}
-				HttpMessage manual = new HttpMessage(message);
-				manual.replaceCookies(cookieMap);
-				log.debug("Replaced request: " + manual.getRequestAsString());
-				manual = burp.makeRequest(manual);
-				log.debug("Response: " + manual.getResponseAsString());
+				
+				HarRequest manual = new Cloner().deepClone(message.getRequest());
+				Utils.replaceCookies(manual,cookieMap);
+				//log.debug("Replaced request: " + manual.getRequestAsString());
+				HarResponse response = proxy.makeRequest(manual);
+				//log.debug("Response: " + manual.getResponseAsString());
 
-				if (pattern.matcher(manual.getResponseAsString()).find()) {
+				if (pattern.matcher(response.getContent().getText()).find()) {
 					log.debug("Found regex: " + verifyString);
 					accessible = true;
 					break;

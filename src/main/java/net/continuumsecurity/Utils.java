@@ -1,13 +1,20 @@
 package net.continuumsecurity;
 
-import difflib.DiffUtils;
-import difflib.Patch;
-import org.apache.log4j.Logger;
-
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.log4j.Logger;
+import org.browsermob.core.har.HarCookie;
+import org.browsermob.core.har.HarEntry;
+import org.browsermob.core.har.HarNameValuePair;
+import org.browsermob.core.har.HarRequest;
+
+import difflib.DiffUtils;
+import difflib.Patch;
 
 public class Utils {
 	static Logger log = Logger.getLogger(Utils.class);
@@ -40,4 +47,38 @@ public class Utils {
         Patch p = DiffUtils.diff(first,second);
         return p.getDeltas().size();
     }
+
+	public static void replaceCookies(HarRequest manual,
+			Map<String, String> cookieMap) {
+		for (String name : cookieMap.keySet()) {
+			HarCookie cookie = Utils.findCookieByName(manual.getCookies(),name);
+			if (cookie != null) {
+				cookie.setValue(cookieMap.get(name));
+			} else {
+				cookie = new HarCookie();
+				cookie.setName(name);
+				cookie.setValue(cookieMap.get(name));
+				manual.getCookies().add(cookie);
+			}
+		}
+	}
+	
+	public static HarCookie findCookieByName(List<HarCookie> harCookies, String name) {
+		for (HarCookie cookie : harCookies) {
+			if (name.equalsIgnoreCase(cookie.getName())) {
+				return cookie;
+			}
+		}
+		return null;
+	}
+    
+    /*public HarEntry copyHarEntry(HarEntry src) {
+    	HarEntry dst = new HarEntry();
+    	//Request
+    	HarRequest request = new HarRequest(src.getRequest().getMethod(),src.getRequest().getUrl(),src.getRequest().getHttpVersion());
+    	Collections.copy(dst.getRequest().getQueryString(), src.getRequest().getQueryString());
+    	Collections.copy(dst.getRequest().getHeaders(), src.getRequest().getHeaders());
+    	
+    	
+    }*/
 }

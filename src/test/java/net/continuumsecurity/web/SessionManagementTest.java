@@ -54,8 +54,8 @@ public class SessionManagementTest {
   
   @Test
   public void the_session_cookie_should_have_the_httpOnly_flag_set(){
-    webAppSteps.setBurpDriver();
-    webAppSteps.resetBurp();
+    webAppSteps.setProxyDriver();
+    webAppSteps.resetProxy();
     webAppSteps.loginFromTable(this.credentialsTable);
     webAppSteps.sessionCookiesHttpOnlyFlag();
   }

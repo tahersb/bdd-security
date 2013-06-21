@@ -24,22 +24,22 @@ import org.openqa.selenium.Proxy;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
-public class BurpFirefoxDriver extends FirefoxDriverFacade implements BurpDriver {
+public class ProxyFirefoxDriver extends FirefoxDriverFacade implements BurpDriver {
 	
-	public BurpFirefoxDriver() {
-		log.debug("Constructing BurpFirefoxDriver");
+	public ProxyFirefoxDriver() {
+		log.debug("Constructing ProxyFirefoxDriver");
 		//DesiredCapabilities capabilities = new DesiredCapabilities();
 		//capabilities.setCapability(CapabilityType.PROXY, getBurpProxy());
 		FirefoxProfile ffProfile = new FirefoxProfile();
 		ffProfile.setPreference("permissions.default.image", 2);
-		ffProfile.setProxyPreferences(getBurpProxy());
+		ffProfile.setProxyPreferences(getInterceptingProxy());
 		ffDriver = new FirefoxDriver(ffProfile);
 	}
 	
-	public Proxy getBurpProxy() {
+	public Proxy getInterceptingProxy() {
         Proxy proxy = new Proxy();
         proxy.setProxyType(Proxy.ProxyType.MANUAL);
-        String proxyStr = String.format("%s:%d", Config.getBurpHost(),Config.getBurpPort());
+        String proxyStr = String.format("%s:%d", Config.getProxyHost(),Config.getProxyPort());
         proxy.setHttpProxy(proxyStr);
         proxy.setSslProxy(proxyStr);
 

@@ -23,15 +23,15 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 import net.continuumsecurity.Config;
 
-public class BurpHtmlUnitDriver extends HtmlUnitDriver implements BurpDriver {
+public class ProxyHtmlUnitDriver extends HtmlUnitDriver implements BurpDriver {
 	private static Logger log;
 	
-	public BurpHtmlUnitDriver() {
+	public ProxyHtmlUnitDriver() {
 		super();
 		log = Logger.getLogger(this.getClass().getName());
 		log.debug("Constructing BurpHtmlUnitDriver");
 		getWebClient().setThrowExceptionOnScriptError(false);
-		setProxy(Config.getBurpHost(),Config.getBurpPort());
+		setProxy(Config.getProxyHost(),Config.getProxyPort());
 	}
 	
 }

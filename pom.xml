@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <url>http://maven.apache.org</url>
-    <modelVersion>4.0.0</modelVersion>
-    <name>BDD-security</name>
-    <groupId>net.continuumsecurity</groupId>
-    <artifactId>bdd-security</artifactId>
-    <packaging>jar</packaging>
-    <version>0.2-SNAPSHOT</version>
+	<url>http://maven.apache.org</url>
+	<modelVersion>4.0.0</modelVersion>
+	<name>BDD-security</name>
+	<groupId>net.continuumsecurity</groupId>
+	<artifactId>bdd-security</artifactId>
+	<packaging>jar</packaging>
+	<version>0.2-SNAPSHOT</version>
 
- 	<properties>
+	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jbehave.core.version>3.8</jbehave.core.version>
 	</properties>
@@ -117,13 +117,23 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpcore</artifactId>
 			<version>4.2.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <version>6.1.1</version>
-      <scope>test</scope>
-    </dependency>
+		</dependency>
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>6.1.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>biz.neustar</groupId>
+			<artifactId>browsermob-proxy</artifactId>
+			<version>2.0-beta-7</version>
+		</dependency>
+		<dependency>
+			<groupId>uk.com.robust-it</groupId>
+			<artifactId>cloning</artifactId>
+			<version>1.9.0</version>
+		</dependency>
 		<!-- <dependency> <groupId>org.apache.httpcomponents</groupId> <artifactId>httpclient</artifactId> 
 			<version>4.1.2</version> </dependency> -->
 	</dependencies>
@@ -132,8 +142,8 @@
 		<testOutputDirectory>target/test-classes</testOutputDirectory>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
 		<plugins>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>

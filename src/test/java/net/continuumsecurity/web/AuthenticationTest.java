@@ -36,24 +36,24 @@ public class AuthenticationTest {
   }
   @Test
   public void the_login_form_itself_should_be_served_over_SSL() throws UnsupportedEncodingException {
-    webAppSteps.setBurpDriver();
-    webAppSteps.resetBurp();
+    webAppSteps.setProxyDriver();
+    webAppSteps.resetProxy();
     webAppSteps.openLoginPage();
     webAppSteps.findResponseWithLoginform();
     webAppSteps.protocolHttps();
   }
   @Test
   public void authentication_credentials_should_be_transmitted_over_SSL() throws UnsupportedEncodingException {
-    webAppSteps.setBurpDriver();
-    webAppSteps.resetBurp();
+    webAppSteps.setProxyDriver();
+    webAppSteps.resetProxy();
     webAppSteps.loginFromTable(this.credentialsTable);
     webAppSteps.findRequestWithPassword();
     webAppSteps.protocolHttps();
   }
   @Test
   public void when_authentication_credentials_are_sent_to_the_server_it_should_respond_with_a_3xx_status_code() {
-    webAppSteps.setBurpDriver();
-    webAppSteps.resetBurp();
+    webAppSteps.setProxyDriver();
+    webAppSteps.resetProxy();
     webAppSteps.loginFromTable(this.credentialsTable);
     webAppSteps.statusCode3xx();
   }

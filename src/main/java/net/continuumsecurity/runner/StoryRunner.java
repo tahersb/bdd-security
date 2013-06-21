@@ -167,7 +167,8 @@ public class StoryRunner extends BaseStoryRunner {
             log.error(e.getMessage());
             e.printStackTrace();
         }
-        BurpFactory.destroyAll();
+        BurpFactory.destroyAll
+        //Change references to BurpFactory, and test all
         DriverFactory.quitAll();
     }
 

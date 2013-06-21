@@ -29,13 +29,13 @@ public class AuthorisationTest {
   public void authorised_users_can_view_restricted_resources(){
     for(HashMap item: this.authorisedTable){
       webAppSteps.createApp();
-      webAppSteps.setBurpDriver();
-      webAppSteps.resetBurp();
+      webAppSteps.setProxyDriver();
+      webAppSteps.resetProxy();
       webAppSteps.openLoginPage();
       webAppSteps.setUsernameFromExamples((String)item.get("username"));
       webAppSteps.setCredentialsFromExamples((String)item.get("password"));
       webAppSteps.loginWithSetCredentials();
-      webAppSteps.resetBurp();
+      webAppSteps.resetProxy();
       webAppSteps.checkAccessToResource((String)item.get("verifyString"),(String)item.get("method"));
     }
   }

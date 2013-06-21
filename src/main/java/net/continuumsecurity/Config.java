@@ -123,12 +123,12 @@ public class Config {
         return getXml().getString("defaultDriver");
     }
 
-    public static String getBurpDriver() {
-        return getXml().getString("burpDriver");
+    public static String getProxyDriver() {
+        return getXml().getString("proxyDriver");
     }
 
-    public static String getBurpHost() {
-        return getXml().getString("burp.host");
+    public static String getProxyHost() {
+        return getXml().getString("proxy.host");
     }
 
     public static boolean displayStackTrace() {
@@ -143,8 +143,8 @@ public class Config {
         return getXml().getString("incorrectPassword");
     }
 
-    public static int getBurpPort() {
-        return getXml().getInt("burp.port");
+    public static int getProxyPort() {
+        return getXml().getInt("proxy.port");
     }
 
     public static String getBurpWSUrl() {
