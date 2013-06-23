@@ -1,8 +1,8 @@
 package net.continuumsecurity.scanner;
 
+import net.continuumsecurity.Utils;
 import net.continuumsecurity.restyburp.model.ScanIssueBean;
 import net.continuumsecurity.restyburp.model.ScanIssueList;
-import net.continuumsecurity.Utils;
 
 import org.apache.log4j.Logger;
 

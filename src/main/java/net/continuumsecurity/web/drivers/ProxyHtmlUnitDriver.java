@@ -18,20 +18,72 @@
  ******************************************************************************/
 package net.continuumsecurity.web.drivers;
 
+import java.net.UnknownHostException;
+import java.util.List;
+
+import net.continuumsecurity.BMProxy;
+import net.continuumsecurity.Config;
+import net.continuumsecurity.InterceptingProxy;
+import net.lightbody.bmp.core.har.HarEntry;
+import net.lightbody.bmp.core.har.HarRequest;
+import net.lightbody.bmp.core.har.HarResponse;
+
 import org.apache.log4j.Logger;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
-import net.continuumsecurity.Config;
-
-public class ProxyHtmlUnitDriver extends HtmlUnitDriver implements BurpDriver {
+public class ProxyHtmlUnitDriver extends HtmlUnitDriver implements ProxyDriver {
 	private static Logger log;
+	BMProxy proxy;
+	public final static int proxyPort = 9197;
 	
-	public ProxyHtmlUnitDriver() {
+	public ProxyHtmlUnitDriver() throws Exception {
 		super();
 		log = Logger.getLogger(this.getClass().getName());
 		log.debug("Constructing BurpHtmlUnitDriver");
+		proxy = new BMProxy(proxyPort);
+		proxy.start();
 		getWebClient().setThrowExceptionOnScriptError(false);
-		setProxy(Config.getProxyHost(),Config.getProxyPort());
+		setProxy("127.0.0.1",proxyPort);
 	}
-	
+
+	@Override
+	public void stop() throws Exception {
+		proxy.stop();
+	}
+
+	@Override
+	public void clear() {
+		proxy.clear();
+	}
+
+	@Override
+	public void newLabel(String label) {
+		proxy.newLabel(label);
+	}
+
+	@Override
+	public List<HarEntry> getHistory() {
+		return proxy.getHistory();
+	}
+
+	@Override
+	public List<HarEntry> findInRequestHistory(String regex) {
+		return proxy.findInRequestHistory(regex);
+	}
+
+	@Override
+	public List<HarEntry> findInResponseHistory(String regex) {
+		return proxy.findInRequestHistory(regex);
+	}
+
+	@Override
+	public HarResponse makeRequest(HarRequest request) throws Exception {
+		return proxy.makeRequest(request);
+	}
+
+	@Override
+	public Proxy seleniumProxy() throws UnknownHostException {
+		return proxy.seleniumProxy();
+	}
 }

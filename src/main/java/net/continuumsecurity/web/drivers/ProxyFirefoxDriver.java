@@ -18,32 +18,89 @@
  ******************************************************************************/
 package net.continuumsecurity.web.drivers;
 
-import net.continuumsecurity.Config;
+import java.net.UnknownHostException;
+import java.util.List;
+
+import net.continuumsecurity.BMProxy;
+import net.continuumsecurity.InterceptingProxy;
+import net.lightbody.bmp.core.har.HarEntry;
+import net.lightbody.bmp.core.har.HarRequest;
+import net.lightbody.bmp.core.har.HarResponse;
 
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
-public class ProxyFirefoxDriver extends FirefoxDriverFacade implements BurpDriver {
-	
-	public ProxyFirefoxDriver() {
+public class ProxyFirefoxDriver extends FirefoxDriverFacade implements
+		ProxyDriver  {
+	BMProxy proxy;
+	public final static int proxyPort = 9197;
+
+	public ProxyFirefoxDriver() throws Exception {
+
 		log.debug("Constructing ProxyFirefoxDriver");
-		//DesiredCapabilities capabilities = new DesiredCapabilities();
-		//capabilities.setCapability(CapabilityType.PROXY, getBurpProxy());
-		FirefoxProfile ffProfile = new FirefoxProfile();
-		ffProfile.setPreference("permissions.default.image", 2);
-		ffProfile.setProxyPreferences(getInterceptingProxy());
-		ffDriver = new FirefoxDriver(ffProfile);
+		proxy = new BMProxy(proxyPort);
+		proxy.start();
+		Proxy proxyDef = proxy.seleniumProxy();
+		DesiredCapabilities capabilities = new DesiredCapabilities();
+		capabilities.setCapability(CapabilityType.PROXY, proxyDef);
+		ffDriver = new FirefoxDriver(capabilities);
+		// DesiredCapabilities capabilities = new DesiredCapabilities();
+		// capabilities.setCapability(CapabilityType.PROXY, getBurpProxy());
+		// FirefoxProfile ffProfile = new FirefoxProfile();
+		// ffProfile.setPreference("permissions.default.image", 2);
+		// ffProfile.setProxyPreferences(getInterceptingProxy());
 	}
-	
-	public Proxy getInterceptingProxy() {
-        Proxy proxy = new Proxy();
-        proxy.setProxyType(Proxy.ProxyType.MANUAL);
-        String proxyStr = String.format("%s:%d", Config.getProxyHost(),Config.getProxyPort());
-        proxy.setHttpProxy(proxyStr);
-        proxy.setSslProxy(proxyStr);
 
-        return proxy;
-    }
-	
+
+	@Override
+	public void stop() throws Exception {
+		proxy.stop();
+	}
+
+	@Override
+	public void clear() {
+		proxy.clear();
+	}
+
+	@Override
+	public void newLabel(String label) {
+		proxy.newLabel(label);
+	}
+
+	@Override
+	public List<HarEntry> getHistory() {
+		return proxy.getHistory();
+	}
+
+	@Override
+	public List<HarEntry> findInRequestHistory(String regex) {
+		return proxy.findInRequestHistory(regex);
+	}
+
+	@Override
+	public List<HarEntry> findInResponseHistory(String regex) {
+		return proxy.findInRequestHistory(regex);
+	}
+
+	@Override
+	public HarResponse makeRequest(HarRequest request) throws Exception {
+		return proxy.makeRequest(request);
+	}
+
+	@Override
+	public Proxy seleniumProxy() throws UnknownHostException {
+		return proxy.seleniumProxy();
+	}
+
+	/*
+	 * public Proxy getInterceptingProxy() { Proxy proxy = new Proxy();
+	 * proxy.setProxyType(Proxy.ProxyType.MANUAL); String proxyStr =
+	 * String.format("%s:%d", Config.getProxyHost(),Config.getProxyPort());
+	 * proxy.setHttpProxy(proxyStr); proxy.setSslProxy(proxyStr);
+	 * 
+	 * return proxy; }
+	 */
+
 }

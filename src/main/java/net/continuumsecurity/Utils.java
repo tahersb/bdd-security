@@ -1,17 +1,15 @@
 package net.continuumsecurity;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.lightbody.bmp.core.har.HarCookie;
+import net.lightbody.bmp.core.har.HarRequest;
+
 import org.apache.log4j.Logger;
-import org.browsermob.core.har.HarCookie;
-import org.browsermob.core.har.HarEntry;
-import org.browsermob.core.har.HarNameValuePair;
-import org.browsermob.core.har.HarRequest;
 
 import difflib.DiffUtils;
 import difflib.Patch;

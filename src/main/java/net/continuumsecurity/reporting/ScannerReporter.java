@@ -25,10 +25,11 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
-import org.apache.log4j.Logger;
 
 import net.continuumsecurity.restyburp.model.ScanIssueList;
 import net.continuumsecurity.restyburp.server.JAXBContextResolver;
+
+import org.apache.log4j.Logger;
 
 public class ScannerReporter {
 	static final String path = "target"+System.getProperty("file.separator")+"jbehave"+System.getProperty("file.separator");

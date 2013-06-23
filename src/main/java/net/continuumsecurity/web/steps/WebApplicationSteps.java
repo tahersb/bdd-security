@@ -38,7 +38,6 @@ import java.util.regex.Pattern;
 
 import net.continuumsecurity.Config;
 import net.continuumsecurity.ConfigurationException;
-import net.continuumsecurity.InterceptingProxy;
 import net.continuumsecurity.User;
 import net.continuumsecurity.UserPassCredentials;
 import net.continuumsecurity.Utils;
@@ -50,12 +49,14 @@ import net.continuumsecurity.web.Application;
 import net.continuumsecurity.web.FakeCaptchaHelper;
 import net.continuumsecurity.web.StepException;
 import net.continuumsecurity.web.WebApplication;
+import net.continuumsecurity.web.drivers.DriverFactory;
+import net.continuumsecurity.web.drivers.ProxyDriver;
+import net.lightbody.bmp.core.har.HarCookie;
+import net.lightbody.bmp.core.har.HarEntry;
+import net.lightbody.bmp.core.har.HarRequest;
+import net.lightbody.bmp.core.har.HarResponse;
 
 import org.apache.log4j.Logger;
-import org.browsermob.core.har.HarCookie;
-import org.browsermob.core.har.HarEntry;
-import org.browsermob.core.har.HarRequest;
-import org.browsermob.core.har.HarResponse;
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.annotations.BeforeStory;
@@ -79,9 +80,9 @@ public class WebApplicationSteps {
 	UserPassCredentials credentials;
 	HarEntry currentHttp;
 	HarEntry savedMessage;
-	InterceptingProxy proxy;
 	List<Cookie> sessionIds;
 	Map<String, List<HarEntry>> methodProxyMap = new HashMap<String, List<HarEntry>>();
+	ProxyDriver driver;
 
 	public WebApplicationSteps() {
 
@@ -100,8 +101,10 @@ public class WebApplicationSteps {
 	@Given("a fresh application")
 	public void createApp() {
 		app = Config.createApp();
-		app.enableDefaultClient();
-		assert app.getWebDriver() != null;
+		((WebApplication)app).setProxyDriver((ProxyDriver)DriverFactory.getDriver(Config.getDefaultDriver()));
+		assert app.getProxyDriver() != null;
+		driver = app.getProxyDriver(); //Convenience
+		driver.clear();
 	}
 
 	@BeforeScenario
@@ -261,15 +264,10 @@ public class WebApplicationSteps {
 		((ILogout) app).logout();
 	}
 
-	@Given("an HTTP logging driver")
-	public void setProxyDriver() {
-		app.enableHttpLoggingClient();
-	}
-
 	@Given("clean HTTP logs")
 	@When("the HTTP logs are cleared")
 	public void resetProxy() {
-		proxy.clear();
+		app.getProxyDriver().clear();
 		//burp = BurpFactory.getBurp();
 		//burp.reset();
 	}
@@ -283,7 +281,7 @@ public class WebApplicationSteps {
 		//messageList.setMessages(burp.findInRequestHistory(passwd));
 		//List<HttpMessage> requests = messageList.findInMessages(username,
 		//		MessageType.REQUEST);
-		List<HarEntry> requests = proxy.findInRequestHistory(passwd);
+		List<HarEntry> requests = driver.findInRequestHistory(passwd);
 		
 		
 		if (requests == null || requests.size() == 0)
@@ -304,7 +302,7 @@ public class WebApplicationSteps {
 		String regex = "(?i)input[\\s\\w=:'\"]*type\\s*=\\s*['\"]password['\"]";
 		//HttpMessageList messageList = new HttpMessageList();
 		//messageList.setMessages(burp.findInResponseHistory(regex));
-		List<HarEntry> responses = proxy.findInResponseHistory(regex);
+		List<HarEntry> responses = driver.findInResponseHistory(regex);
 		
 		if (responses == null || responses.size() == 0)
 			throw new StepException(
@@ -321,8 +319,8 @@ public class WebApplicationSteps {
 	@Then("the protocol of the current URL should be HTTPS")
 	public void protocolUrlHttps() {
 		log.debug("URL of login page: "
-				+ ((WebApplication) app).getWebDriver().getCurrentUrl());
-		assertThat(((WebApplication) app).getWebDriver().getCurrentUrl()
+				+ ((WebApplication) app).getProxyDriver().getCurrentUrl());
+		assertThat(((WebApplication) app).getProxyDriver().getCurrentUrl()
 				.substring(0, 4), equalToIgnoringCase("https"));
 	}
 
@@ -385,7 +383,7 @@ public class WebApplicationSteps {
 		Config.instance();
 		int numCookies = Config.getSessionIDs().size();
 		int cookieCount = 0;
-		for (HarEntry entry : proxy.getHistory()) {
+		for (HarEntry entry : driver.getHistory()) {
 			for (String name : Config.getSessionIDs()) {
 				for (HarCookie cookie : entry.getResponse().getCookies()) {
 					if (name.equalsIgnoreCase(cookie.getName())) {
@@ -400,7 +398,7 @@ public class WebApplicationSteps {
 
 	@Then("the password field should have the autocomplete directive set to 'off'")
 	public void thenThePasswordFieldShouldHaveTheAutocompleteDirectiveSetTodisabled() {
-		WebElement passwd = ((WebApplication) app).getWebDriver().findElement(
+		WebElement passwd = ((WebApplication) app).getProxyDriver().findElement(
 				By.xpath("//input[@type='password']"));
 		assertThat(passwd.getAttribute("autocomplete"),
 				equalToIgnoringCase("off"));
@@ -455,7 +453,7 @@ public class WebApplicationSteps {
 					+ " has already been added to the map, using the existing HTTP logs");
 			return;
 		}
-		methodProxyMap.put(method, proxy.getHistory());
+		methodProxyMap.put(method, driver.getHistory());
 	}
 
 	@Given("the access control map for authorised users has been populated")
@@ -484,16 +482,16 @@ public class WebApplicationSteps {
 					+ " has already been added to the map, using the existing HTTP logs");
 			return;
 		}
-		methodProxyMap.put(method, proxy.getHistory());
+		methodProxyMap.put(method, driver.getHistory());
 
-		Assert.assertThat(proxy.findInResponseHistory(verifyString).size(),
+		Assert.assertThat(driver.findInResponseHistory(verifyString).size(),
 				greaterThan(0));
 	}
 
 	@Then("they should not see the word <verifyString> when accessing the restricted resource <method>")
 	public void checkNoAccessToResource(
 			@Named("verifyString") String verifyString,
-			@Named("method") String method) {
+			@Named("method") String method) throws Exception {
 		if (methodProxyMap == null || methodProxyMap.get(method).size() == 0)
 			throw new ConfigurationException(
 					"No HTTP messages were recorded for the method: " + method);
@@ -513,7 +511,7 @@ public class WebApplicationSteps {
 				HarRequest manual = new Cloner().deepClone(message.getRequest());
 				Utils.replaceCookies(manual,cookieMap);
 				//log.debug("Replaced request: " + manual.getRequestAsString());
-				HarResponse response = proxy.makeRequest(manual);
+				HarResponse response = driver.makeRequest(manual);
 				//log.debug("Response: " + manual.getResponseAsString());
 
 				if (pattern.matcher(response.getContent().getText()).find()) {

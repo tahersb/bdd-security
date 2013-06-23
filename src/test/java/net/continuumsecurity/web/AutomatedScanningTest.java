@@ -1,7 +1,10 @@
 package net.continuumsecurity.web;
 
-import org.testng.annotations.*;
 import net.continuumsecurity.web.steps.AutomatedScanningSteps;
+
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 
 public class AutomatedScanningTest {
   protected AutomatedScanningSteps automatedScanningSteps = new AutomatedScanningSteps();

@@ -1,12 +1,14 @@
 package net.continuumsecurity.web;
 
-import org.testng.annotations.*;
-import net.continuumsecurity.web.steps.WebApplicationSteps;
-import net.continuumsecurity.web.steps.AutomatedScanningSteps;
-import net.continuumsecurity.web.NgUtils;
-import java.lang.System;
-import java.util.List;
 import java.util.HashMap;
+import java.util.List;
+
+import net.continuumsecurity.web.steps.AutomatedScanningSteps;
+import net.continuumsecurity.web.steps.WebApplicationSteps;
+
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 
 public class ConfigurationTest {
   protected WebApplicationSteps webAppSteps = new WebApplicationSteps();

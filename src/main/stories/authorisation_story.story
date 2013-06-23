@@ -8,14 +8,13 @@ Meta:
 @id config_authorised_resources
 
 Given a fresh application
-And an HTTP logging driver
-And clean HTTP logs
 And the login page
 And the username <username>
 And the password <password>
 When the user logs in
 And the HTTP logs are cleared
 Then they should see the word <verifyString> when accessing the restricted resource <method>
+And the resource name <method> and HTTP requests should be recorded and stored
 
 Examples:
 tables/authorised.resources.table

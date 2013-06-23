@@ -1,8 +1,9 @@
 package net.continuumsecurity.web;
 
+import static org.junit.Assert.assertEquals;
 import net.continuumsecurity.Utils;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class UtilsTest {
 

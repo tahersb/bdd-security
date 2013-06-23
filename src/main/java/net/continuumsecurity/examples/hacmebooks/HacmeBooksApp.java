@@ -8,6 +8,7 @@ import net.continuumsecurity.behaviour.ILogin;
 import net.continuumsecurity.behaviour.ILogout;
 import net.continuumsecurity.web.SecurityScan;
 import net.continuumsecurity.web.WebApplication;
+
 import org.openqa.selenium.By;
 
 public class HacmeBooksApp extends WebApplication implements ILogin, ILogout {

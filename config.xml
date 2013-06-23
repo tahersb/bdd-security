@@ -3,13 +3,13 @@
     <!-- The settings in this file are for the ropey-tasks vulnerable web app available at: https://github.com/stephendv/RopeyTasks, you'll need to modify them for your app! -->
 
     <!-- Available drivers can be found in net.continuumsecurity.web.drivers.DriverFactory -->
-    <defaultDriver>Firefox</defaultDriver>
+    <defaultDriver>ProxyHtmlunit</defaultDriver>
 
     <!-- The driver that the automated tests will use to point at Burp, available drivers can be found in net.continuumsecurity.web.drivers.Burp*Driver -->
-    <burpDriver>BurpFirefox</burpDriver>
+    <proxyDriver>ProxyFirefox</proxyDriver>
 
     <!-- Base URL for the application to test -->
-    <baseUrl>http://localhost:9110/ropeytasks/</baseUrl>
+    <baseUrl>http://127.0.0.1:9110/ropeytasks/</baseUrl>
 
     <!-- The fully qualified class name representing the application under test -->
     <class>net.continuumsecurity.examples.ropeytasks.RopeyTasksApplication</class>
@@ -46,7 +46,7 @@
         <WSProxyHost></WSProxyHost>
         <WSProxyPort></WSProxyPort>
     </burp>
-    <displayStackTrace>false</displayStackTrace>
+    <displayStackTrace>true</displayStackTrace>
     <storyDir>src/main/stories/</storyDir>
     <reportsDir>reports</reportsDir>
     <latestReportsDir>target/jbehave/</latestReportsDir>

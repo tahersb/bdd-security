@@ -18,8 +18,26 @@
  ******************************************************************************/
 package net.continuumsecurity.web.drivers;
 
-import org.openqa.selenium.WebDriver;
 
-public interface BurpDriver extends WebDriver {
+import net.continuumsecurity.Config;
+import net.continuumsecurity.burpclient.BurpClient;
 
+import org.apache.log4j.Logger;
+
+
+public class ScannerFactory {
+	private static BurpClient burp;
+	static Logger log = Logger.getLogger(ScannerFactory.class);
+	
+	public static BurpClient getBurp() {
+		if (burp == null) burp = new BurpClient(Config.getBurpWSUrl(),Config.getBurpWSProxyHost(),Config.getBurpWSProxyPort());
+		return burp;
+	}
+	
+	public static void destroyAll() {
+		log.debug("destroying Burp clients");
+		getBurp().destroy();
+	}
+	
+	
 }

@@ -18,12 +18,6 @@
  ******************************************************************************/
 package net.continuumsecurity;
 
-import net.continuumsecurity.web.Application;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.log4j.PropertyConfigurator;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -34,6 +28,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.continuumsecurity.web.Application;
+
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.apache.commons.configuration.XMLConfiguration;
+import org.apache.log4j.PropertyConfigurator;
+
 public class Config {
 
     public static Application createApp() {
@@ -43,7 +44,6 @@ public class Config {
             app = appClass.newInstance();
 
             return (Application) app;
-
 
         } catch (Exception e) {
             System.err.println("FATAL error instantiating the class: "

@@ -61,7 +61,7 @@ public class DriverFactory {
 		return retVal;
 	}
 
-	public static void quitAll() {
+	public static void closeAll() {
 		log.debug("closing all drivers");
 		for (WebDriver driver : get().drivers) {
 			try {
@@ -113,5 +113,6 @@ public class DriverFactory {
 		}
 		throw new RuntimeException("Driver could not be instatiated");
 	}
+
 
 }

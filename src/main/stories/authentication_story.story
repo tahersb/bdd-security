@@ -19,9 +19,7 @@ Meta:
 @Description By serving the page that contains the login form over SSL, the user can verify that it is your site asking for their credentials, and not a phishing attempt
 @id auth_login_form_over_ssl
 
-Given an HTTP logging driver
-And clean HTTP logs
-And the login page
+Given the login page
 And the HTTP request-response containing the login form
 Then the protocol should be HTTPS
 
@@ -32,9 +30,7 @@ Meta:
 @id auth_https
 
 
-Given an HTTP logging driver
-And clean HTTP logs
-And the default user logs in with credentials from: users.table
+Given the default user logs in with credentials from: users.table
 And the HTTP request-response containing the default credentials
 Then the protocol should be HTTPS
 	
@@ -43,9 +39,7 @@ Meta:
 @Description If the server responds with a 200 message, then an attacker with access to the same browser as the user could navigate back to the login page and hit reload in the browser.  The browser will then resubmit the login credentials.  This is not possible if the server responds with a 302 status code.
 @id auth_return_3xx
 
-Given an HTTP logging driver
-And clean HTTP logs
-And the default user logs in with credentials from: users.table
+Given the default user logs in with credentials from: users.table
 And the HTTP request-response containing the default credentials
 Then the response status code should start with 3
 

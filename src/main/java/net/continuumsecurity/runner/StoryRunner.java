@@ -18,11 +18,22 @@
  ******************************************************************************/
 package net.continuumsecurity.runner;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
 import net.continuumsecurity.Config;
-import net.continuumsecurity.web.drivers.BurpFactory;
 import net.continuumsecurity.web.drivers.DriverFactory;
 import net.continuumsecurity.web.steps.AutomatedScanningSteps;
 import net.continuumsecurity.web.steps.WebApplicationSteps;
+
 import org.apache.commons.io.FileUtils;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.StoryFinder;
@@ -31,13 +42,6 @@ import org.jbehave.core.steps.InstanceStepsFactory;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 public class StoryRunner extends BaseStoryRunner {
     final CmdLineParser parser;
@@ -56,6 +60,9 @@ public class StoryRunner extends BaseStoryRunner {
 
     @Option(name = "-h")
     private boolean help = false;
+    
+    @Option(name = "-scan")
+    private boolean automatedScan = false;
 
     public StoryRunner() {
         super();
@@ -68,9 +75,14 @@ public class StoryRunner extends BaseStoryRunner {
     @Override
     public InjectableStepsFactory stepsFactory() {
         WebApplicationSteps ws = new WebApplicationSteps();
+        if (automatedScan) {
         return new InstanceStepsFactory(configuration(),
                 ws,
                 new AutomatedScanningSteps());
+        } else {
+        	return new InstanceStepsFactory(configuration(),
+                    ws);
+        }
     }
 
     @Override
@@ -127,7 +139,7 @@ public class StoryRunner extends BaseStoryRunner {
         if (!skipConfigurationStories) {
             try {
                 log.debug("Running configuration stories");
-                ConfigurationStoryRunner configRunner = new ConfigurationStoryRunner(filters);
+                ConfigurationStoryRunner configRunner = new ConfigurationStoryRunner(filters,automatedScan);
                 configRunner.run();
                 log.debug("Configuration stories completed.");
             } catch (Throwable t) {
@@ -167,9 +179,8 @@ public class StoryRunner extends BaseStoryRunner {
             log.error(e.getMessage());
             e.printStackTrace();
         }
-        BurpFactory.destroyAll
         //Change references to BurpFactory, and test all
-        DriverFactory.quitAll();
+        DriverFactory.closeAll();
     }
 
     public static void main(String... argv) throws CmdLineException,IOException {

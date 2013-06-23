@@ -1,6 +1,5 @@
 package net.continuumsecurity.web;
 
-import net.continuumsecurity.behaviour.ICaptcha;
 
 /*
  * Always fails captcha's

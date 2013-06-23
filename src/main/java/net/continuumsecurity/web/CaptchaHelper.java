@@ -2,7 +2,6 @@ package net.continuumsecurity.web;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
@@ -31,7 +30,7 @@ public class CaptchaHelper extends CaptchaFinder implements ICaptchaHelper {
 		String solved = null;
 		try {
 			img = ((ICaptcha)app).getCaptchaImage();
-			File screenshot = ((TakesScreenshot)app.getWebDriver()).getScreenshotAs(OutputType.FILE);
+			File screenshot = ((TakesScreenshot)app.getProxyDriver()).getScreenshotAs(OutputType.FILE);
 			BufferedImage  fullImg = ImageIO.read(screenshot);
 			//Get the location of element on the page
 			Point point = img.getLocation();

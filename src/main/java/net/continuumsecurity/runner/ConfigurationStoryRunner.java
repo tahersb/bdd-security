@@ -18,20 +18,23 @@
  ******************************************************************************/
 package net.continuumsecurity.runner;
 
+import java.util.List;
+
 import net.continuumsecurity.web.steps.AutomatedScanningSteps;
 import net.continuumsecurity.web.steps.WebApplicationSteps;
+
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 
-import java.util.List;
-
 public class ConfigurationStoryRunner extends BaseStoryRunner {
 	List<String> filters;
+	boolean automatedScan;
 	
-	public ConfigurationStoryRunner(List<String> filters) {
+	public ConfigurationStoryRunner(List<String> filters,boolean automatedScan) {
 		this.filters = filters;
+		this.automatedScan = automatedScan;
 		configuredEmbedder().useMetaFilters(filters);
 		configuredEmbedder().embedderControls().doIgnoreFailureInStories(false);
 	}
@@ -45,9 +48,15 @@ public class ConfigurationStoryRunner extends BaseStoryRunner {
 	@Override
 	public InjectableStepsFactory stepsFactory() {
 		WebApplicationSteps ws = new WebApplicationSteps();
-		return new InstanceStepsFactory(configuration(),
+		if (automatedScan) {
+			return new InstanceStepsFactory(configuration(),
 				ws,
 				new AutomatedScanningSteps());
+		} else {
+			return new InstanceStepsFactory(configuration(),
+					ws);
+		}
+			
 	}
 	
 }

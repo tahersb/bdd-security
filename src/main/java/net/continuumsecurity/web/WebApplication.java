@@ -23,6 +23,7 @@ import net.continuumsecurity.UnexpectedContentException;
 import net.continuumsecurity.behaviour.ICaptcha;
 import net.continuumsecurity.caption.CBSolveCaptcha;
 import net.continuumsecurity.web.drivers.DriverFactory;
+import net.continuumsecurity.web.drivers.ProxyDriver;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.Cookie;
@@ -31,7 +32,7 @@ import org.openqa.selenium.WebDriver;
 
 
 public class WebApplication extends Application {
-    protected WebDriver driver;
+    protected ProxyDriver driver;
     protected ICaptchaHelper captchaHelper;
 
     public WebApplication() {
@@ -47,11 +48,12 @@ public class WebApplication extends Application {
         this.captchaHelper = captchaHelper;
     }
 
-    public WebDriver getWebDriver() {
+    @Override
+    public ProxyDriver getProxyDriver() {
         return driver;
     }
 
-    public void setWebDriver(WebDriver driver) {
+    public void setProxyDriver(ProxyDriver driver) {
         this.driver = driver;
     }
 
@@ -64,13 +66,4 @@ public class WebApplication extends Application {
         return driver.manage().getCookieNamed(name);
     }
 
-    @Override
-    public void enableHttpLoggingClient() {
-        setWebDriver(DriverFactory.getDriver(Config.getProxyDriver()));
-    }
-
-    @Override
-    public void enableDefaultClient() {
-        setWebDriver(DriverFactory.getDriver(Config.getDefaultDriver()));
-    }
 }

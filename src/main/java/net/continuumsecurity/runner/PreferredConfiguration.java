@@ -35,8 +35,8 @@ import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.Format;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.ParameterConverters;
-import org.jbehave.core.steps.SilentStepMonitor;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
+import org.jbehave.core.steps.SilentStepMonitor;
 
 public class PreferredConfiguration extends MostUsefulConfiguration {
 	

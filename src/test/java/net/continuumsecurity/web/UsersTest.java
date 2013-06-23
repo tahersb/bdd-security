@@ -18,12 +18,13 @@
  ******************************************************************************/
 package net.continuumsecurity.web;
 
+import static org.junit.Assert.assertFalse;
 import net.continuumsecurity.Credentials;
 import net.continuumsecurity.User;
 import net.continuumsecurity.Users;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class UsersTest {
 	Users users;

@@ -18,7 +18,6 @@
  ******************************************************************************/
 package net.continuumsecurity;
 
-import net.continuumsecurity.Credentials;
 
 public class UserPassCredentials extends Credentials {
 	

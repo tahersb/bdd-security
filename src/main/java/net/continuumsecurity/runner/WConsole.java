@@ -22,8 +22,9 @@ package net.continuumsecurity.runner;
 import groovy.ui.Console;
 import net.continuumsecurity.Config;
 import net.continuumsecurity.web.Application;
-import net.continuumsecurity.web.drivers.BurpFactory;
 import net.continuumsecurity.web.drivers.DriverFactory;
+import net.continuumsecurity.web.drivers.ScannerFactory;
+
 import org.apache.log4j.PropertyConfigurator;
 
 
@@ -33,7 +34,6 @@ public class WConsole {
     public WConsole() {
         PropertyConfigurator.configure("log4j.properties");
         app = Config.createApp();
-        app.enableDefaultClient();
     }
 
     public void run() {
@@ -42,7 +42,7 @@ public class WConsole {
         //TODO fixme
         //console.setVariable("driver",app.getDriver());
         console.setVariable("proxyDriver",DriverFactory.getDriver(Config.getProxyDriver()));
-        console.setVariable("proxy",BurpFactory.getBurp());
+        console.setVariable("proxy",ScannerFactory.getBurp());
         console.run();
     }
 
