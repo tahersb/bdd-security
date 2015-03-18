@@ -10,7 +10,7 @@ I want to scan the hosts for known security vulnerabilities
 Scenario: The host systems should not expose known security vulnerabilities
 
 Given a nessus API client that accepts all hostnames in SSL certificates
-And a nessus version 6 server at https://localhost:8834
+And a nessus version 5 server at https://localhost:8834
 And the scanning policy named test
 And the target hosts
 |hostname             |
