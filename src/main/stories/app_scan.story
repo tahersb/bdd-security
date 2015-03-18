@@ -22,7 +22,7 @@ Then no Medium or higher risk vulnerabilities should be present
 
 
 Scenario: The application should not contain Cross Site Scripting vulnerabilities
-Meta: @id scan_xss
+Meta: @id scan_xss @skip
 Given a scanner with all policies disabled
 And the URL regular expressions listed in the file: tables/exclude_urls.table are excluded from the scanner
 And the Cross-Site-Scripting policy is enabled
@@ -34,7 +34,7 @@ Then no Medium or higher risk vulnerabilities should be present
 
 
 Scenario: The application should not contain path traversal vulnerabilities
-Meta: @id scan_path_traversal
+Meta: @id scan_path_traversal @skip
 Given a scanner with all policies disabled
 And the URL regular expressions listed in the file: tables/exclude_urls.table are excluded from the scanner
 And the Path-traversal policy is enabled
@@ -46,7 +46,7 @@ Then no Medium or higher risk vulnerabilities should be present
 
 
 Scenario: The application should not contain Server side include vulnerabilities
-Meta: @id scan_ssi
+Meta: @id scan_ssi @skip
 Given a scanner with all policies disabled
 And the URL regular expressions listed in the file: tables/exclude_urls.table are excluded from the scanner
 And the Server-side-include policy is enabled
@@ -58,7 +58,7 @@ Then no Medium or higher risk vulnerabilities should be present
 
 
 Scenario: The application should not contain external redirect vulnerabilities
-Meta: @id scan_external_redirect
+Meta: @id scan_external_redirect @skip
 Given a scanner with all policies disabled
 And the URL regular expressions listed in the file: tables/exclude_urls.table are excluded from the scanner
 And the External-redirect policy is enabled
