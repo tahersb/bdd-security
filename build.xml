@@ -157,7 +157,7 @@
     <target name="junit.zap.run" depends="compile">
         <junit printsummary="yes" haltonfailure="no" showoutput="true">
             <!-- run specific stories through meta filtering -->
-            <sysproperty key="filters" value="-m -skip -story nessus_scan, -story ssl, -story host_config"/>
+            <sysproperty key="filters" value="-m -skip +story authentication +story app_scan +story authorisation +story data_security +story http_headers +story session_management"/>
             <classpath>
                 <path refid="build.classpath"/>
                 <pathelement location="${build.dir}"/>
