@@ -14,6 +14,6 @@ When TCP ports from 1 to 1000 are scanned using 100 threads and a timeout of 300
 And the open ports are selected
 Then only the following ports should be open:
 |port|
-|80|
-|443|
+|22|
+|631|
 
