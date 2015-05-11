@@ -18,7 +18,7 @@
     <!-- A Java class to hold the Selenium steps to test the application in depth. Optionally required for in-depth selenium testing.-->
     <class>net.continuumsecurity.examples.ropeytasks.RopeyTasksApplication</class>
 
-    <sslyze>/opt/sslyze/sslyze.py</sslyze>
+    <sslyze>D:\sslyze\sslyze.exe</sslyze>
 
     <!-- Optional names of the session ID cookies for session management testing. -->
     <sessionIds>
@@ -40,15 +40,14 @@
         <password>continuum</password>
     </nessus>
 
-    <!-- Optional location of a running OWASP ZAP instance.  Either an external proxy must be specified here, or the zapPath must be specified to launch ZAP
+    Optional location of a running OWASP ZAP instance.  Either an external proxy must be specified here, or the zapPath must be specified to launch ZAP
     <proxy>
         <host>127.0.0.1</host>
-        <port>8888</port>
+        <port>7070</port>
         <api></api>
-    </proxy> -->
+    </proxy>
 
-    <zapPath>zap/zap.sh</zapPath>
-
+    <!-- <zapPath>zap/zap.sh</zapPath> -->
     <displayStackTrace>true</displayStackTrace>
     <storyDir>src/main/stories/</storyDir>
     <reportsDir>reports</reportsDir>
