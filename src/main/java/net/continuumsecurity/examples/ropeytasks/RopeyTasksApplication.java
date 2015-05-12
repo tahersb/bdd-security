@@ -29,7 +29,12 @@ public class RopeyTasksApplication extends WebApplication implements ILogin,
     @Override
     public void openLoginPage() {
 		System.out.println("Inside openLoginPage method");
-        driver.get(Config.getInstance().getBaseUrl() + "user/login");
+		try{
+			driver.get(Config.getInstance().getBaseUrl() + "user/login");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+        
 		System.out.println("Called selenium driver to get user/login page");
         verifyTextPresent("Login");
 		System.out.println("verified text Login present");
