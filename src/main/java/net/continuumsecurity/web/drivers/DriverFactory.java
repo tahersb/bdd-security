@@ -117,7 +117,8 @@ public class DriverFactory {
             ChromeOptions options = new ChromeOptions();
             options.addArguments("--test-type");
             capabilities.setCapability(ChromeOptions.CAPABILITY,options);
-            return new ChromeDriver(capabilities);
+            //return new ChromeDriver(capabilities);
+			return new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), capabilities);
         } else return new ChromeDriver();
 
     }
@@ -143,7 +144,8 @@ public class DriverFactory {
             capabilities = new DesiredCapabilities();
         }
         capabilities.setCapability(FirefoxDriver.PROFILE, myProfile);
-        return new FirefoxDriver(capabilities);
+        //return new FirefoxDriver(capabilities);
+		return new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), capabilities);
     }
 
     public DesiredCapabilities createProxyCapabilities() {
