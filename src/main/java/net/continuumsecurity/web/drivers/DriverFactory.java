@@ -114,23 +114,27 @@ public class DriverFactory {
 
     public WebDriver createChromeDriver(DesiredCapabilities capabilities) {
         System.setProperty("webdriver.chrome.driver", Config.getInstance().getDefaultDriverPath());
+		try {
         if (capabilities != null) {
             capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
             ChromeOptions options = new ChromeOptions();
             options.addArguments("--test-type");
             capabilities.setCapability(ChromeOptions.CAPABILITY,options);
             //return new ChromeDriver(capabilities);
-			try {
+			
 				return new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), capabilities);
-			}catch (Exception e) {
-            
-            e.printStackTrace();}
+			
 			
         } else return new ChromeDriver();
+		
+		}catch (Exception e) {
+            
+            e.printStackTrace();}
 
     }
 
     public WebDriver createFirefoxDriver(DesiredCapabilities capabilities) {
+		try{
         if (capabilities != null) {
             return new FirefoxDriver(capabilities);
         }
@@ -152,7 +156,7 @@ public class DriverFactory {
         }
         capabilities.setCapability(FirefoxDriver.PROFILE, myProfile);
         //return new FirefoxDriver(capabilities);
-		try{
+		
 			return new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), capabilities);
 		}catch (Exception e) {
             
