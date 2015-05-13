@@ -6,7 +6,7 @@
 
     <!-- The web driver to use, can be either Firefox or Chrome.  Optionally specify path to the driver (required for linux)
          Some drivers require a path to the platform specific driver binary, for example chrome needs chromedriver.  If these values are not specified, we'll try auto-detection. -->
-    <defaultDriver>firefox</defaultDriver>
+    <defaultDriver>chrome</defaultDriver>
     
 	<!-- <defaultDriver path="drivers/chromedriver-mac">Chrome</defaultDriver> -->
 
