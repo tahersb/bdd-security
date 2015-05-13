@@ -21,7 +21,6 @@ package net.continuumsecurity.web.drivers;
 import net.continuumsecurity.Config;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.Proxy;
-import org.openqa.selenium.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -30,8 +29,10 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.io.File;
+import java.net.URL;
 
 public class DriverFactory {
     private final static String CHROME = "chrome";
