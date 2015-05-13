@@ -29,10 +29,9 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.io.File;
-import java.net.URL;
+
 
 public class DriverFactory {
     private final static String CHROME = "chrome";
@@ -114,28 +113,20 @@ public class DriverFactory {
 
     public WebDriver createChromeDriver(DesiredCapabilities capabilities) {
         System.setProperty("webdriver.chrome.driver", Config.getInstance().getDefaultDriverPath());
-		try {
+		
         if (capabilities != null) {
             capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
             ChromeOptions options = new ChromeOptions();
             options.addArguments("--test-type");
             capabilities.setCapability(ChromeOptions.CAPABILITY,options);
-            //return new ChromeDriver(capabilities);
-			
-				return new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), capabilities);
-			
+            return new ChromeDriver(capabilities);			
 			
         } else return new ChromeDriver();
 		
-		}catch (Exception e) {
-            
-		e.printStackTrace();}
-			
-		return null;
     }
 
     public WebDriver createFirefoxDriver(DesiredCapabilities capabilities) {
-		try{
+		
         if (capabilities != null) {
             return new FirefoxDriver(capabilities);
         }
@@ -156,13 +147,8 @@ public class DriverFactory {
             capabilities = new DesiredCapabilities();
         }
         capabilities.setCapability(FirefoxDriver.PROFILE, myProfile);
-        //return new FirefoxDriver(capabilities);
+        return new FirefoxDriver(capabilities);		
 		
-			return new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), capabilities);
-		}catch (Exception e) {
-            
-		e.printStackTrace();}
-		return null;
     }
 
     public DesiredCapabilities createProxyCapabilities() {
