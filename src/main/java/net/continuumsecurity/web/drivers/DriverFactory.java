@@ -129,8 +129,9 @@ public class DriverFactory {
 		
 		}catch (Exception e) {
             
-            e.printStackTrace();}
-
+		e.printStackTrace();}
+			
+		return null;
     }
 
     public WebDriver createFirefoxDriver(DesiredCapabilities capabilities) {
@@ -161,7 +162,7 @@ public class DriverFactory {
 		}catch (Exception e) {
             
 		e.printStackTrace();}
-		
+		return null;
     }
 
     public DesiredCapabilities createProxyCapabilities() {
