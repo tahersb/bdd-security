@@ -112,7 +112,7 @@ public class StoryRunner extends JUnitStoryRunner {
             log.debug("Caught exception from StoryRunner.execute()");
             e.printStackTrace();
         } finally {
-            wrapUp();
+            new WrapUpScanSteps.wrapUp();
         }
         System.exit(0);
     }
