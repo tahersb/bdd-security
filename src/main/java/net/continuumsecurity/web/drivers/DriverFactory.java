@@ -32,6 +32,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
 
+
 public class DriverFactory {
     private final static String CHROME = "chrome";
     private final static String FIREFOX = "firefox";
@@ -112,17 +113,20 @@ public class DriverFactory {
 
     public WebDriver createChromeDriver(DesiredCapabilities capabilities) {
         System.setProperty("webdriver.chrome.driver", Config.getInstance().getDefaultDriverPath());
+		
         if (capabilities != null) {
             capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
             ChromeOptions options = new ChromeOptions();
             options.addArguments("--test-type");
             capabilities.setCapability(ChromeOptions.CAPABILITY,options);
-            return new ChromeDriver(capabilities);
+            return new ChromeDriver(capabilities);			
+			
         } else return new ChromeDriver();
-
+		
     }
 
     public WebDriver createFirefoxDriver(DesiredCapabilities capabilities) {
+		
         if (capabilities != null) {
             return new FirefoxDriver(capabilities);
         }
@@ -143,7 +147,8 @@ public class DriverFactory {
             capabilities = new DesiredCapabilities();
         }
         capabilities.setCapability(FirefoxDriver.PROFILE, myProfile);
-        return new FirefoxDriver(capabilities);
+        return new FirefoxDriver(capabilities);		
+		
     }
 
     public DesiredCapabilities createProxyCapabilities() {

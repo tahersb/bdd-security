@@ -43,6 +43,7 @@ public class WrapUpScanSteps {
             e.printStackTrace();
         }
         DriverFactory.quitAll();
+		
     }
 
     public void setEmbedder(Embedder embedder) {

@@ -5,12 +5,13 @@
             which is included in the bdd-security framework for demo purposes. -->
 
     <!-- The web driver to use, can be either Firefox or Chrome.  Optionally specify path to the driver (required for linux)
-         Some drivers require a path to the platform specific driver binary, for example chrome needs chromedriver.  If these values are not specified, we'll try auto-detection.
+         Some drivers require a path to the platform specific driver binary, for example chrome needs chromedriver.  If these values are not specified, we'll try auto-detection. -->
     <defaultDriver>firefox</defaultDriver>
-    <defaultDriver path="drivers/chromedriver-mac">Chrome</defaultDriver>-->
+    
+	<!-- <defaultDriver path="drivers/chromedriver.exe">Chrome</defaultDriver> -->
 
     <!-- Base URL of the application to test -->
-    <baseUrl>http://www.altoromutual.com/</baseUrl>
+    <baseUrl>http://localhost:9090/</baseUrl>
 
     <!-- Base Secure URL of the application to test.  Used for the SSL and the HTTP header tests -->
     <baseSecureUrl>https://www.wormly.com/</baseSecureUrl>
@@ -45,7 +46,7 @@
         <host>127.0.0.1</host>
         <port>7070</port>
         <api></api>
-    </proxy> 
+    </proxy>
 
     <!-- <zapPath>zap/zap.sh</zapPath> -->
 

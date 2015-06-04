@@ -70,7 +70,7 @@
             <classpath>
                 <path refid="build.classpath"/>
                 <fileset dir="${story.dir}">
-                    <include name="**/*.story"/>
+                    <include name="**/app_scan.story"/>
                 </fileset>
                 <pathelement location="${build.dir}"/>
             </classpath>

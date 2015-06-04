@@ -28,8 +28,16 @@ public class RopeyTasksApplication extends WebApplication implements ILogin,
 
     @Override
     public void openLoginPage() {
-        driver.get(Config.getInstance().getBaseUrl() + "user/login");
+		System.out.println("Inside openLoginPage method");
+		try{
+			driver.get(Config.getInstance().getBaseUrl() + "user/login");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+        
+		System.out.println("Called selenium driver to get user/login page");
         verifyTextPresent("Login");
+		System.out.println("verified text Login present");
     }
 
     @Override
@@ -44,7 +52,9 @@ public class RopeyTasksApplication extends WebApplication implements ILogin,
 
     // Convenience method
     public void login(String username, String password) {
+		System.out.println("Inside Login method");
         login(new UserPassCredentials(username, password));
+		System.out.println("Exiting login method successfully");
     }
 
     @Override
@@ -91,11 +101,22 @@ public class RopeyTasksApplication extends WebApplication implements ILogin,
     }
 
     public void navigate() {
-        openLoginPage();
+        System.out.println("Entered navigate method");
+		System.out.println("About to execute openLoginPage method");
+		openLoginPage();
+		System.out.println("Executed openLoginPage method");
+		System.out.println("executing login method with the default credentials in config.xml");
         login(Config.getInstance().getUsers().getDefaultCredentials());
+		System.out.println("Executed login method successfully");
+		System.out.println("Verify if Welcome string is present");
         verifyTextPresent("Welcome");
+		System.out.println("Welcome string is verified");
+		System.out.println("Executing viewProfile method");
         viewProfile();
+		System.out.println("view profile method executed successfully");
+		System.out.println("Executing search method");
         search("test");
+		System.out.println("Search method executed successfully");
     }
 
     /*
