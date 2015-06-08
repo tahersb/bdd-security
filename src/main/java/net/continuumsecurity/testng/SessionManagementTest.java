@@ -49,6 +49,10 @@ public class SessionManagementTest {
     @Test
     public void sessions_should_timeout_after_a_period_of_inactivity() {
         webAppSteps.loginFromTable(this.credentialsTable);
+        
+        /**webAppSteps.findAndSetSessionIds();
+        webAppSteps.waitForTime(15);
+        webAppSteps.loginFails();**/
     }
 
     @Test

@@ -213,12 +213,13 @@
     </target>
 
     <target name="demo.run">
-        <parallel>
-            <antcall target="ropey.run"/>
-            <sequential>
-                <sleep seconds="20"/>
+        <parallel><antcall target="ropey.run"/>
+            
+            <sequential><sleep seconds="20"/>
                 <antcall target="jbehave.run"/>
+   			<echo message="Build Complete!"/> 
             </sequential>
+                        
         </parallel>
     </target>
 
